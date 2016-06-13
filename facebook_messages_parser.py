@@ -30,13 +30,13 @@ if __name__ == '__main__':
     graph = None
     soup = BeautifulSoup(messages_html, 'html.parser')
 
-    users = soup.find_all('span', {'class': 'user'})
+    users = map(str, soup.find_all('span', {'class': 'user'}))
 
     username_regex = re.compile(r'<span.*?>(.*?)@facebook\.com</span>')
     username_regex_alt = re.compile(r'<span.*?>(.*?)</span>')
 
     # Pass 1: normalize all names using the Graph API
-    for i, user in enumerate(map(str, users)):
+    for user in users:
         if user not in user_cache:
             try:
                 user_id = username_regex.search(str(user)).group(1)
@@ -44,6 +44,7 @@ if __name__ == '__main__':
                 name = graph.get_object(id=user_id)['name']
                 user_cache[user] = name
                 print('Fetched name: {}'.format(name))
+
             except AttributeError:
                 name = username_regex_alt.search(str(user)).group(1)
                 user_cache[user] = name
@@ -54,7 +55,7 @@ if __name__ == '__main__':
     message_map = {}
 
     # Pass 2: map names to messages
-    for user, message in zip(map(str, users), messages):
+    for user, message in zip(users, messages):
         name = user_cache[user]
         if name not in message_map:
             message_map[name] = []
