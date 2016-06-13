@@ -8,3 +8,5 @@ This script depends on:
   * `numpy`
   * `matplotlib`
   * `Beautiful Soup`
+
+You'll also need a Graph API access token, which you can get from [here](https://developers.facebook.com/tools/explorer/).
